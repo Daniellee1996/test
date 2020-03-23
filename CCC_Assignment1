@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Mar 19 22:05:24 2020
+
+@author: danny
+"""
+
+import json
+
+# good json file
+# =============================================================================
+# with open('/Users/danny/Documents/2020 S1/CCC/Assignment1/twitters/littleTwitter_right.json') as f:
+#     data = json.load(f)
+# 
+# print(data['rows'])
+# 
+# for d in data['rows']:
+#     print(d['doc']['lang'])
+# =============================================================================
+
+
+
+f = open('smallTwitter.json','r')
+data = f.read()
+
+# check if the file is in valid json format, if not, make it valid for python to parse
+if data[-1] == '\n':
+    data = data[:-1]
+if data[-1] == ',':
+    data = data[:-1]+']}'    
+
+data = json.loads(data)
+
+
+# make a look-up hashmap for counting 'lang'
+lang_name = ['Amharic', 'Arabic', 'Armenian', 'Bengali', 'Bulgarian', 'Burmese', 
+             'Chinese', 'Czech', 'Danish', 'Dutch', 'English', 'Estonian', 
+             'Finnish', 'French', 'Georgian', 'German', 'Greek', 'Gujarati', 
+             'Haitian', 'Hebrew', 'Hindi', 'Hungarian', 'Icelandic', 'Indonesian', 
+             'Italian', 'Japanese', 'Kannada', 'Khmer', 'Korean', 'Lao', 
+             'Latvian', 'Lithuanian', 'Malayalam', 'Maldivian', 'Marathi', 'Nepali',
+             'Norwegian', 'Oriya', 'Panjabi', 'Pashto', 'Persian', 'Polish',
+             'Portuguese', 'Romanian', 'Russian', 'Serbian', 'Sindhi', 'Sinhala', 
+             'Slovak', 'Slovenian', 'Sorani Kurdish', 'Spanish', 'Swedish', 'Tagalog',
+             'Tami', 'Telugu', 'Thai', 'Tibetan', 'Turkish', 'Ukrainian', 'Urdu', 
+             'Uyghur', 'Vietnamese', 'Welsh', 'Undefined']
+lang_code = ['am', 'ar', 'hy', 'bn', 'bg', 'my', 'zh', 'cs', 'da', 'nl', 'en', 
+             'et', 'fi', 'fr', 'ka', 'de', 'el', 'gu', 'ht', 'iw', 'hi', 'hu', 
+             'is', 'in', 'it', 'ja', 'kn', 'km', 'ko', 'lo', 'lv', 'lt', 'ml',
+             'dv', 'mr', 'ne', 'no', 'or', 'pa', 'ps', 'fa', 'pl', 'pt',
+             'ro', 'ru', 'sr', 'sd', 'si', 'sk', 'sl', 'ckb', 'es', 'sv', 'tl',
+             'ta','te', 'th', 'bo', 'tr', 'uk', 'ur', 'ug', 'vi', 'cy', 'und']
+lang_dict = {}
+for (c,n) in zip(lang_code, lang_name):
+    lang_dict[c] = n + ' (' + c + ')'
+
+# get the frequency
+from collections import Counter
+cnt = Counter()
+
+for d in data['rows']:
+    cnt[d['doc']['lang']] += 1
+
+# print top 10 common languages
+print('The top 10 common languages:')
+for code, count in cnt.most_common(10):
+    print("{0}: {1}".format(lang_dict.get(code, 'Unknown language'),count))
+    
+
